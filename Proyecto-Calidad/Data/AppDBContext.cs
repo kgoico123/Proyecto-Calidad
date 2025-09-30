@@ -24,6 +24,12 @@ namespace Proyecto_Calidad.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
+            // Configurar el discriminador para ApplicationUser
+            modelBuilder.Entity<ApplicationUser>()
+                .HasDiscriminator<string>("Discriminator")
+                .HasValue<ApplicationUser>("ApplicationUser");
+                
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }

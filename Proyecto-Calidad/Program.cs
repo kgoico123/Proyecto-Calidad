@@ -21,7 +21,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.SignIn.RequireConfirmedAccount = false;
     options.SignIn.RequireConfirmedEmail = false;
 
-    // Configuración personalizada para permitir contraseñas simples
+    // Configuraciï¿½n personalizada para permitir contraseï¿½as simples
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireNonAlphanumeric = false;
@@ -52,7 +52,7 @@ using (var scope = app.Services.CreateScope())
         var inicializador = services.GetRequiredService<IDbInitialize>();
         inicializador.Initialize();
     }
-    catch (Exception ex)
+    catch (Exception)
     {
         throw;
     }
