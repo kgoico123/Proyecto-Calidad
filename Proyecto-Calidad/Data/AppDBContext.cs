@@ -1,15 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Proyecto_Calidad.Models;
 using System.Reflection;
 
 
 namespace Proyecto_Calidad.Data
 {
-    public class AppDBContext : DbContext
+    public class AppDBContext : IdentityDbContext<ApplicationUser>
     {
-        public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
-        {
-        }
+        public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) { }
 
         public DbSet<ApplicationUser> AppUsers { get; set; }
         public DbSet<Calificacion> Calificaciones { get; set; }
@@ -21,6 +21,10 @@ namespace Proyecto_Calidad.Data
         public DbSet<Notificacion> Notificaciones { get; set; }
         public DbSet<Tutor> Tutores { get; set; }
 
-      
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
     }
 }

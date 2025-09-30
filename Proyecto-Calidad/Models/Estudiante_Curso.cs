@@ -1,18 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace Proyecto_Calidad.Models;
 
-namespace Proyecto_Calidad.Models
+
+public class Estudiante_Curso
 {
-    public class Estudiante_Curso
-    {
-        [Key]
-        public int IdEstudianteCurso { get; set; }
-        public int EstudianteId { get; set; }
-        public Estudiante Estudiante { get; set; }
 
-        public int CursoId { get; set; }
-        public Curso Curso { get; set; }
-        public DateTime FechaRegistro { get; set; }
+    public int IdEstudianteCurso { get; set; }
+    public int EstudianteId { get; set; }
+    public Estudiante Estudiante { get; set; }
 
-        public IEnumerable<Calificacion>? Calificaciones { get; set; }
-    }
+    public int CursoId { get; set; }
+    public Curso Curso { get; set; }
+    public DateTime FechaRegistro { get; set; }
+
+    public IEnumerable<Calificacion>? Calificaciones { get; set; }
+
 }
+
+

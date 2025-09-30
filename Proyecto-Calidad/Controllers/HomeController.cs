@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Proyecto_Calidad.Models;
+using System.Diagnostics;
 
 namespace Proyecto_Calidad.Controllers
 {

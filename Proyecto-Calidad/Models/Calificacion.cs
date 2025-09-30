@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography.Xml;
 
 namespace Proyecto_Calidad.Models
 {
     public class Calificacion
     {
-        [Key]
+
         public int IdCalificacion { get; set; }
         public int estudiante_CursoId { get; set; }
         public Estudiante_Curso Estudiante_Curso { get; set; }

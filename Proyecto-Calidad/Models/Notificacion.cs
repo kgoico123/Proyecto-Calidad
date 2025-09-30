@@ -4,7 +4,7 @@ namespace Proyecto_Calidad.Models
 {
     public class Notificacion
     {
-        [Key]
+
         public int IdNotificacion { get; set; }
         public int TutorId { get; set; }
         public Tutor Tutor { get; set; }

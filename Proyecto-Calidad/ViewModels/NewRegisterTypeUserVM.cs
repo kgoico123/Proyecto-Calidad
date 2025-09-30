@@ -1,17 +1,17 @@
 ﻿using Proyecto_Calidad.Models;
 
-namespace Proyecto_Calidad.ViewModels
-{
-    public class NewRegisterTypeUserVM
-    {
-        public string tipo { get; set; }
-        public ApplicationUser User { get; set; }
-        public Estudiante estudiante { get; set; }
-        public Tutor tutor { get; set; }
-        public Docente docente { get; set; }
-        public Curso curso { get; set; }
+namespace Proyecto_Calidad.ViewModels;
 
-        public IEnumerable<Curso> cursos { get; set; }
-        public IEnumerable<Tutor> tutores { get; set; }
-    }
+public class NewRegisterTypeUserVM
+{
+    public string tipo { get; set; }
+    public ApplicationUser User { get; set; }
+    public Estudiante estudiante { get; set; }
+    public Tutor tutor { get; set; }
+    public Docente docente { get; set; }
+    public Curso curso { get; set; }
+
+    public IEnumerable<Curso> cursos { get; set; }
+    public IEnumerable<Tutor> tutores { get; set; }
 }
+
