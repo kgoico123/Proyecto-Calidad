@@ -6,6 +6,7 @@ WORKDIR /source
 # Copiar los .csproj y .sln primero aprovecha el almacenamiento en caché de capas de Docker
 COPY *.sln .
 COPY Proyecto-Calidad/*.csproj ./Proyecto-Calidad/
+COPY TestProyectoCalidad/*.csproj ./TestProyectoCalidad/
 RUN dotnet restore "Proyecto-Calidad.sln"
 
 # Copia el resto del código fuente
