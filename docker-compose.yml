@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: proyecto_calidad_db
+    environment:
+      - SA_PASSWORD=Your_password123
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    # healthcheck removed to avoid shell/env substitution issues on Windows Docker
+
+  web:
+    build:
+      context: .
+      dockerfile: Proyecto-Calidad/Dockerfile
+    container_name: proyecto_calidad_web
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__CadenaSQL1=Server=db,1433;Database=Proyecto-Calidad;User Id=sa;Password=Your_password123;TrustServerCertificate=True;
+    depends_on:
+      - db
+    restart: on-failure

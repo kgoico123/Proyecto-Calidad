@@ -10,7 +10,7 @@ using Proyecto_Calidad.seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("CadenaSQL1");
+var connectionString = builder.Configuration.GetConnectionString("ConectionSQLServer");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

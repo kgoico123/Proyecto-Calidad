@@ -24,6 +24,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "DomainUrls": {
+      "WEB_URL": "http://proyectocalidad-001-site1.ntempurl.com"
     }
   }
 }
