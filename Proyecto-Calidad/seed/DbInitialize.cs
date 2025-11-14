@@ -42,7 +42,7 @@ public class DbInitialize : IDbInitialize
         }
 
         // Crear usuarios si no existen (verificamos por DNI específico)
-        var adminExists = _userManager.Users.Any(u => u.Dni == "7654311");
+        var adminExists = _userManager.Users.Any(u => u.Dni == "76543111");
         if (!adminExists)
         {
             var admin = new ApplicationUser
@@ -50,7 +50,7 @@ public class DbInitialize : IDbInitialize
                 Email = "admin@dev.cs",
                 UserName = "admin@dev.cs",
                 PhoneNumber = "123456789",
-                Dni = "7654311",
+                Dni = "76543111",
             };
 
             var estudiante = new ApplicationUser
@@ -58,7 +58,7 @@ public class DbInitialize : IDbInitialize
                 Email = "estudiante@dev.cs",
                 UserName = "estudiante@dev.cs",
                 PhoneNumber = "123456789",
-                Dni = "7654333",
+                Dni = "76543331",
             };
 
             var tutor = new ApplicationUser
@@ -66,7 +66,7 @@ public class DbInitialize : IDbInitialize
                 Email = "tutor@dev.cs",
                 UserName = "tutor@dev.cs",
                 PhoneNumber = "123456789",
-                Dni = "7654444",
+                Dni = "76544441",
             };
 
             var docente = new ApplicationUser
@@ -74,7 +74,7 @@ public class DbInitialize : IDbInitialize
                 Email = "docente@dev.cs",
                 UserName = "docente@dev.cs",
                 PhoneNumber = "123456789",
-                Dni = "7654322",
+                Dni = "76543221",
             };
 
             _userManager.CreateAsync(admin, "Admin123*").GetAwaiter().GetResult();

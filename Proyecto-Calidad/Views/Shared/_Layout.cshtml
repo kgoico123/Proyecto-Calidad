@@ -18,6 +18,153 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Proyecto_Calidad.styles.css" asp-append-version="true" />
     <script src="https://cdn.jsdelivr.net/npm/@@tailwindcss/browser@4"></script>
+    <style>
+        /* Accesibilidad: modo alto contraste y tipografía legible */
+        /* Usar variable CSS para fuente; el tamaño se controla en root (html.style.fontSize) */
+        .accessibility-mode {
+            font-family: var(--acc-font, Arial, Helvetica, sans-serif) !important;
+        }
+
+        /* Forzar colores más contrastados en elementos de texto y enlaces */
+        .accessibility-mode body,
+        .accessibility-mode p,
+        .accessibility-mode span,
+        .accessibility-mode h1,
+        .accessibility-mode h2,
+        .accessibility-mode h3,
+        .accessibility-mode h4,
+        .accessibility-mode h5,
+        .accessibility-mode a,
+        .accessibility-mode .text-green-800 {
+            color: var(--acc-text-color, #000) !important;
+            background-color: transparent !important;
+        }
+
+        /* Mejor contraste para botones y navegación */
+        .accessibility-mode nav,
+        .accessibility-mode .bg-white {
+            background-color: #ffffff !important;
+        }
+
+        /* Estilo del botón flotante de accesibilidad (estilo: icono circular azul con pictograma blanco) */
+        .accessibility-toggle {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            width: 56px;
+            height: 56px;
+            z-index: 9999;
+            background: #0d6efd; /* azul */
+            color: #ffffff; /* icono en blanco */
+            border-radius: 50%;
+            box-shadow: 0 6px 18px rgba(13,110,253,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+
+        .accessibility-toggle:focus { outline: 3px solid rgba(13,110,253,0.25); }
+
+        .accessibility-toggle.active { background: #084298; color: #fff; }
+
+        .accessibility-toggle svg { width: 24px; height: 24px; display:block; }
+
+        /* Panel modal pequeño para opciones de accesibilidad */
+        .accessibility-panel-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .accessibility-panel {
+            background: #fff;
+            width: 340px;
+            max-width: calc(100% - 2rem);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(2,6,23,0.2);
+            padding: 0; /* moved padding to header/content */
+            color: #111;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        /* Cabecera del panel con color institucional */
+        .accessibility-panel h2 {
+            margin: 0;
+            padding: 0.9rem 1rem;
+            font-size: 1.05rem;
+            background: linear-gradient(90deg, #125a2a 0%, #167a3a 100%); /* tonos verdes institucionales */
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .accessibility-panel .panel-body {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            background: linear-gradient(180deg,#ffffff, #fbfffb);
+        }
+
+        .accessibility-row { display: flex; gap: .5rem; align-items: center; margin: .2rem 0; }
+        .accessibility-row label { flex: 1; font-size: .95rem; }
+        .accessibility-controls { display: flex; gap: .5rem; flex-direction: column; }
+    .accessibility-swatch { width: 36px; height: 28px; border-radius: 6px; border: 1px solid rgba(0,0,0,.08); cursor: pointer; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.02); }
+    .accessibility-swatch.selected { box-shadow: 0 4px 12px rgba(22,122,58,0.18); transform: translateY(-2px); outline: 2px solid rgba(22,122,58,0.12); }
+        .accessibility-actions { display:flex; gap:.5rem; justify-content:flex-end; margin-top:.5rem; }
+        .accessibility-actions button { padding:.45rem .7rem; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:#fff; cursor:pointer; }
+        .accessibility-actions button.primary { background:#167a3a; border-color:#167a3a; color:#fff; }
+    /* Cuando el panel se fija para arrastrar */
+    .accessibility-panel.draggable { cursor: move; }
+
+        /* Toggle switch estilo moderno */
+        .toggle-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+        }
+        .switch {
+            width: 46px;
+            height: 26px;
+            background: #ddd;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: background .15s ease;
+            box-shadow: inset 0 -2px 0 rgba(0,0,0,0.06);
+        }
+        .switch .knob {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: left .15s ease, background .15s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+        }
+        .switch.on { background: #0d6efd; }
+        .switch.on .knob { left: 23px; background: #fff; }
+
+        /* Controles de tamaño con botones */
+        .size-controls { display:flex; align-items:center; gap:.5rem; }
+        .size-controls button { width:34px; height:34px; border-radius:6px; border:1px solid rgba(0,0,0,0.08); background:#fff; cursor:pointer; }
+        .size-display { min-width:42px; text-align:center; font-weight:600; }
+
+        /* Paleta para color de texto */
+        .textcolor-swatch { width:30px; height:30px; border-radius:6px; border:1px solid rgba(0,0,0,0.08); cursor:pointer; display:inline-block; margin-right:6px; }
+        .textcolor-swatch.selected { box-shadow: 0 4px 12px rgba(0,0,0,0.12); transform: translateY(-2px); }
+
+    </style>
 </head>
 
 <body class="min-h-[100vh] flex flex-col">
@@ -79,9 +226,86 @@
         </nav>
     </header>
 
+    <!-- Botón de accesibilidad (persona) -->
+    <button id="accessibilityToggle" class="accessibility-toggle" aria-pressed="false" aria-label="Activar modo accesibilidad" title="Accesibilidad">
+        <!-- Icono persona -->
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.866 0-7 3.134-7 7h2c0-2.761 2.239-5 5-5s5 2.239 5 5h2c0-3.866-3.134-7-7-7z" />
+        </svg>
+    </button>
+
+    <!-- Panel de opciones de accesibilidad -->
+    <div id="accessibilityBackdrop" class="accessibility-panel-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="accessibility-panel" id="accessibilityPanel">
+            <h2 id="accessibilityTitle">Accesibilidad</h2>
+
+                <div class="accessibility-controls">
+                    <div class="accessibility-row">
+                        <label for="accEnable">Activar</label>
+                        <div class="toggle-switch">
+                            <div id="accSwitch" class="switch" role="switch" aria-checked="false" tabindex="0" title="Activar accesibilidad">
+                                <div class="knob"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accessibility-row">
+                        <label for="accFont">Fuente</label>
+                        <select id="accFont">
+                            <option value="">Por defecto</option>
+                            <option value="Arial, Helvetica, sans-serif">Arial</option>
+                            <option value="Verdana, Geneva, sans-serif">Verdana</option>
+                            <option value="'OpenDyslexic', Arial, sans-serif">OpenDyslexic</option>
+                            <option value="'Roboto', Arial, sans-serif">Roboto</option>
+                            <option value="'Open Sans', Arial, sans-serif">Open Sans</option>
+                            <option value="'Lato', Arial, sans-serif">Lato</option>
+                            <option value="'Merriweather', serif">Merriweather</option>
+                        </select>
+                    </div>
+
+                    <div class="accessibility-row" style="align-items:center">
+                        <label for="accSize">Tamaño</label>
+                        <div class="size-controls">
+                            <button id="accSizeMinus" type="button" aria-label="Disminuir tamaño">-</button>
+                            <input id="accSize" type="range" min="90" max="200" value="105" />
+                            <button id="accSizePlus" type="button" aria-label="Aumentar tamaño">+</button>
+                            <div class="size-display" id="accSizeDisplay">105%</div>
+                        </div>
+                    </div>
+
+                    <div class="accessibility-row">
+                        <label>Fondo</label>
+                        <div style="display:flex;gap:.5rem;align-items:center">
+                            <div class="accessibility-swatch" data-color="" title="Por defecto" style="background: transparent;"></div>
+                            <div class="accessibility-swatch" data-color="#ffffff" title="Blanco" style="background:#ffffff"></div>
+                            <div class="accessibility-swatch" data-color="#fff9db" title="Amarillo claro" style="background:#fff9db"></div>
+                            <div class="accessibility-swatch" data-color="#000000" title="Negro" style="background:#000000"></div>
+                            <div class="accessibility-swatch" data-color="#002b36" title="Alto contraste" style="background:#002b36"></div>
+                        </div>
+                    </div>
+
+                    <div class="accessibility-row">
+                        <label>Color de texto</label>
+                        <div>
+                            <div class="textcolor-swatch" data-color="#000000" title="Negro" style="background:#000"></div>
+                            <div class="textcolor-swatch" data-color="#ffffff" title="Blanco" style="background:#fff; border:1px solid rgba(0,0,0,0.12)"></div>
+                            <div class="textcolor-swatch" data-color="#084298" title="Azul oscuro" style="background:#084298"></div>
+                            <div class="textcolor-swatch" data-color="#125a2a" title="Verde institucional" style="background:#125a2a"></div>
+                            <input type="color" id="accTextColorPicker" title="Elegir color de texto" style="margin-left:8px; vertical-align:middle" />
+                        </div>
+                    </div>
+                </div>
+
+            <div class="accessibility-actions">
+                <button id="accReset">Restablecer</button>
+                <button id="accApply" class="primary">Aplicar</button>
+            </div>
+        </div>
+    </div>
+
     <div class="relative overflow-hidden min-h-[90vh]" style="background-image: url('/images/colegio.jpg'); background-size: cover; background-position: center;">
         <!-- Capa de superposición para mejorar la legibilidad -->
-        <div class="absolute inset-0 bg-white/50 backdrop-blur-sm"></div>
+    <div id="pageOverlay" class="absolute inset-0 bg-white/50 backdrop-blur-sm"></div>
         
         <main role="main" class="relative max-h-[90vh] h-[90vh] min-h-[90vh] overflow-auto">
             @RenderBody()
@@ -104,6 +328,304 @@
                     mobileMenu.classList.toggle('hidden');
                 });
             }
+        });
+    </script>
+
+    <script>
+        // Script para el botón de accesibilidad: abre un panel con opciones y persiste la configuración
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggle = document.getElementById('accessibilityToggle');
+            const backdrop = document.getElementById('accessibilityBackdrop');
+            const panel = document.getElementById('accessibilityPanel');
+            const storageKey = 'accessibilitySettings';
+
+            const accSwitch = document.getElementById('accSwitch');
+            const selectFont = document.getElementById('accFont');
+            const rangeSize = document.getElementById('accSize');
+            const accSizeMinus = document.getElementById('accSizeMinus');
+            const accSizePlus = document.getElementById('accSizePlus');
+            const accSizeDisplay = document.getElementById('accSizeDisplay');
+            const swatches = document.querySelectorAll('.accessibility-swatch');
+            const textSwatches = document.querySelectorAll('.textcolor-swatch');
+            const textPicker = document.getElementById('accTextColorPicker');
+            const btnApply = document.getElementById('accApply');
+            const btnReset = document.getElementById('accReset');
+            const overlay = document.getElementById('pageOverlay');
+
+            if (!toggle || !backdrop || !panel) return;
+
+            // tamaño raíz original (para impedir que el panel cambie cuando escalamos la app)
+            const originalRootFontSize = window.getComputedStyle(document.documentElement).fontSize || '16px';
+
+            function openPanel() {
+                backdrop.style.display = 'flex';
+                backdrop.setAttribute('aria-hidden', 'false');
+                // posicionar panel: si hay posición guardada, usarla; si no, centrar
+                try {
+                    const posRaw = localStorage.getItem('accessibilityPanelPos');
+                    panel.style.position = 'absolute';
+                    if (posRaw) {
+                        const pos = JSON.parse(posRaw);
+                        panel.style.left = (pos.x || (window.innerWidth - panel.offsetWidth) / 2) + 'px';
+                        panel.style.top = (pos.y || (window.innerHeight - panel.offsetHeight) / 2) + 'px';
+                    } else {
+                        panel.style.left = Math.max(16, (window.innerWidth - panel.offsetWidth) / 2) + 'px';
+                        panel.style.top = Math.max(48, (window.innerHeight - panel.offsetHeight) / 2) + 'px';
+                    }
+                } catch (e) {
+                    // fallback: centrar
+                    panel.style.position = 'absolute';
+                    panel.style.left = Math.max(16, (window.innerWidth - panel.offsetWidth) / 2) + 'px';
+                    panel.style.top = Math.max(48, (window.innerHeight - panel.offsetHeight) / 2) + 'px';
+                }
+                // focus first control
+                if (accSwitch) accSwitch.focus();
+            }
+
+            function closePanel() {
+                backdrop.style.display = 'none';
+                backdrop.setAttribute('aria-hidden', 'true');
+                toggle.focus();
+            }
+
+            function applySettings(s) {
+                if (!s) s = { enabled: false };
+                if (s.enabled) {
+                    document.documentElement.classList.add('accessibility-mode');
+                    toggle.classList.add('active');
+                    toggle.setAttribute('aria-pressed', 'true');
+                } else {
+                    document.documentElement.classList.remove('accessibility-mode');
+                    toggle.classList.remove('active');
+                    toggle.setAttribute('aria-pressed', 'false');
+                }
+
+                if (s.font && s.font.length) document.documentElement.style.setProperty('--acc-font', s.font);
+                else document.documentElement.style.removeProperty('--acc-font');
+
+                // Aplicar tamaño global: cambiamos el font-size raíz para que componentes que usan rem escalen.
+                try {
+                    if (s.size) {
+                        document.documentElement.style.setProperty('font-size', (s.size / 100) + 'rem');
+                    } else {
+                        document.documentElement.style.removeProperty('font-size');
+                    }
+                    // Evitar que el propio panel de accesibilidad escale: fijar su font-size al original
+                    if (panel) panel.style.fontSize = originalRootFontSize;
+                } catch (e) { console.warn('Accesibilidad: error aplicando tamaño global', e); }
+
+                // aplicar color de texto
+                if (s.textColor && s.textColor.length) document.documentElement.style.setProperty('--acc-text-color', s.textColor);
+                else document.documentElement.style.removeProperty('--acc-text-color');
+
+                // aplicar color sobre la capa de overlay si existe
+                try {
+                    if (overlay) {
+                        if (s.bg && s.bg.length) overlay.style.backgroundColor = s.bg;
+                        else overlay.style.backgroundColor = '';
+                    }
+                } catch (e) { console.warn(e); }
+            }
+
+            function saveSettings(s) {
+                try { localStorage.setItem(storageKey, JSON.stringify(s)); } catch (e) { console.warn('Accesibilidad: error guardando', e); }
+            }
+
+            // sincronización de controles con settings (se usa en carga inicial y cuando cambian en otra ventana)
+            function populateControls(s) {
+                try {
+                    if (!s) s = { enabled: false };
+                    setSwitchState(!!s.enabled);
+                    selectFont.value = s.font || '';
+                    rangeSize.value = s.size || 105;
+                    swatches.forEach(x => x.classList.toggle('selected', x.dataset.color === (s.bg || '')));
+                    // texto
+                    textSwatches.forEach(x => x.classList.toggle('selected', x.dataset.color === (s.textColor || '')));
+                    if (textPicker && s.textColor) textPicker.value = s.textColor;
+                    if (accSizeDisplay) accSizeDisplay.textContent = (rangeSize.value || 105) + '%';
+                } catch (e) { console.warn('Accesibilidad: error poblando controles', e); }
+            }
+
+            // cargar preferencia inicial
+            try {
+                const raw = localStorage.getItem(storageKey);
+                if (raw) {
+                    const saved = JSON.parse(raw);
+                    populateControls(saved);
+                    applySettings(saved);
+                }
+            } catch (e) { console.warn('Accesibilidad: error leyendo preferencias', e); }
+
+            // Escuchar cambios desde otras pestañas/ventanas y aplicar en caliente
+            window.addEventListener('storage', function (ev) {
+                if (ev.key !== storageKey) return;
+                try {
+                    const newVal = ev.newValue ? JSON.parse(ev.newValue) : { enabled: false };
+                    populateControls(newVal);
+                    applySettings(newVal);
+                } catch (err) { console.warn('Accesibilidad: error aplicando cambios desde storage', err); }
+            });
+
+            // abrir panel al clicar el icono
+            toggle.addEventListener('click', function () {
+                openPanel();
+            });
+
+            // seleccionar swatch
+            swatches.forEach(s => {
+                s.addEventListener('click', function () {
+                    swatches.forEach(x => x.classList.remove('selected'));
+                    s.classList.add('selected');
+                });
+            });
+
+            // text color swatches
+            textSwatches.forEach(ts => {
+                ts.addEventListener('click', function () {
+                    textSwatches.forEach(x => x.classList.remove('selected'));
+                    ts.classList.add('selected');
+                    if (textPicker) textPicker.value = ts.dataset.color || '#000000';
+                });
+            });
+
+            if (textPicker) {
+                textPicker.addEventListener('input', function () {
+                    textSwatches.forEach(x => x.classList.remove('selected'));
+                });
+            }
+
+            // Switch behavior (visual)
+            function setSwitchState(on) {
+                if (!accSwitch) return;
+                if (on) {
+                    accSwitch.classList.add('on');
+                    accSwitch.setAttribute('aria-checked', 'true');
+                } else {
+                    accSwitch.classList.remove('on');
+                    accSwitch.setAttribute('aria-checked', 'false');
+                }
+            }
+
+            if (accSwitch) {
+                accSwitch.addEventListener('click', function () {
+                    const now = !accSwitch.classList.contains('on');
+                    setSwitchState(now);
+                });
+                accSwitch.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); accSwitch.click(); } });
+            }
+
+            // tamaño: +/- y display
+                if (rangeSize) {
+                rangeSize.addEventListener('input', function () {
+                    if (accSizeDisplay) accSizeDisplay.textContent = rangeSize.value + '%';
+                    // live preview: cambiar font-size raíz para que todo use rem; luego fijar el panel al tamaño original
+                    try {
+                        document.documentElement.style.setProperty('font-size', (parseInt(rangeSize.value, 10) / 100) + 'rem');
+                        if (panel) panel.style.fontSize = originalRootFontSize;
+                    } catch (e) { console.warn('Accesibilidad: error preview tamaño', e); }
+                });
+            }
+            if (accSizeMinus) accSizeMinus.addEventListener('click', function () { rangeSize.value = Math.max(parseInt(rangeSize.min, 10), parseInt(rangeSize.value, 10) - 5); rangeSize.dispatchEvent(new Event('input')); });
+            if (accSizePlus) accSizePlus.addEventListener('click', function () { rangeSize.value = Math.min(parseInt(rangeSize.max, 10), parseInt(rangeSize.value, 10) + 5); rangeSize.dispatchEvent(new Event('input')); });
+
+            // DRAG: permitir mover el panel por su cabecera (h2)
+            (function makeDraggable() {
+                const header = panel.querySelector('h2');
+                let dragging = false;
+                let startX = 0, startY = 0, origX = 0, origY = 0;
+
+                function onDown(e) {
+                    e.preventDefault();
+                    dragging = true;
+                    panel.classList.add('draggable');
+                    const rect = panel.getBoundingClientRect();
+                    origX = rect.left; origY = rect.top;
+                    startX = (e.touches ? e.touches[0].clientX : e.clientX);
+                    startY = (e.touches ? e.touches[0].clientY : e.clientY);
+                    document.addEventListener('mousemove', onMove);
+                    document.addEventListener('mouseup', onUp);
+                    document.addEventListener('touchmove', onMove, { passive: false });
+                    document.addEventListener('touchend', onUp);
+                }
+
+                function onMove(e) {
+                    if (!dragging) return;
+                    e.preventDefault();
+                    const curX = (e.touches ? e.touches[0].clientX : e.clientX);
+                    const curY = (e.touches ? e.touches[0].clientY : e.clientY);
+                    const dx = curX - startX;
+                    const dy = curY - startY;
+                    let left = Math.round(origX + dx);
+                    let top = Math.round(origY + dy);
+                    // limitar dentro de la ventana
+                    left = Math.max(8, Math.min(left, window.innerWidth - panel.offsetWidth - 8));
+                    top = Math.max(8, Math.min(top, window.innerHeight - panel.offsetHeight - 8));
+                    panel.style.left = left + 'px';
+                    panel.style.top = top + 'px';
+                }
+
+                function onUp() {
+                    if (!dragging) return;
+                    dragging = false;
+                    panel.classList.remove('draggable');
+                    document.removeEventListener('mousemove', onMove);
+                    document.removeEventListener('mouseup', onUp);
+                    document.removeEventListener('touchmove', onMove);
+                    document.removeEventListener('touchend', onUp);
+                    // guardar posición
+                    try {
+                        const left = parseInt(panel.style.left || '0', 10);
+                        const top = parseInt(panel.style.top || '0', 10);
+                        localStorage.setItem('accessibilityPanelPos', JSON.stringify({ x: left, y: top }));
+                    } catch (e) { console.warn('Accesibilidad: error guardando posición', e); }
+                }
+
+                if (header) {
+                    header.style.cursor = 'move';
+                    header.addEventListener('mousedown', onDown);
+                    header.addEventListener('touchstart', onDown, { passive: false });
+                }
+            })();
+
+            // aplicar y cerrar
+            btnApply.addEventListener('click', function () {
+                const selectedSwatch = document.querySelector('.accessibility-swatch.selected');
+                const selectedText = document.querySelector('.textcolor-swatch.selected');
+                const settings = {
+                    enabled: accSwitch ? accSwitch.classList.contains('on') : false,
+                    font: selectFont.value || '',
+                    size: parseInt(rangeSize.value, 10) || 105,
+                    bg: selectedSwatch ? (selectedSwatch.dataset.color || '') : '',
+                    textColor: (selectedText ? selectedText.dataset.color : (textPicker ? textPicker.value : '')) || ''
+                };
+                applySettings(settings);
+                saveSettings(settings);
+                closePanel();
+            });
+
+            // reset
+            btnReset.addEventListener('click', function () {
+                setSwitchState(false);
+                selectFont.value = '';
+                rangeSize.value = 105;
+                if (accSizeDisplay) accSizeDisplay.textContent = '105%';
+                swatches.forEach(x => x.classList.remove('selected'));
+                textSwatches.forEach(x => x.classList.remove('selected'));
+                if (textPicker) textPicker.value = '#000000';
+                const settings = { enabled: false };
+                applySettings(settings);
+                saveSettings(settings);
+            });
+
+            // cerrar si clic fuera
+            backdrop.addEventListener('click', function (e) {
+                if (e.target === backdrop) closePanel();
+            });
+
+            // cerrar con ESC
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && backdrop.style.display === 'flex') closePanel();
+            });
         });
     </script>
 

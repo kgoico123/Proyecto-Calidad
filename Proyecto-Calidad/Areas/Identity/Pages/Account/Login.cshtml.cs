@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Proyecto_Calidad.Models; // Asegúrate de usar el namespace correcto de ApplicationUser
+using Proyecto_Calidad.shared;
 
 namespace Proyecto_Calidad.Areas.Identity.Pages.Account
 {
@@ -98,7 +99,21 @@ namespace Proyecto_Calidad.Areas.Identity.Pages.Account
             if (result.Succeeded)
             {
                 _logger.LogInformation("Usuario inició sesión.");
-                return LocalRedirect(returnUrl);
+
+                // Redirigir directamente al dashboard según el rol del usuario
+                var roles = await _userManager.GetRolesAsync(user);
+                string dashboardRoute = "/"; // fallback
+
+                if (roles.Contains(VCG.Role_Admin))
+                    dashboardRoute = "/Administrador/Dashboard";
+                else if (roles.Contains(VCG.Role_Docente))
+                    dashboardRoute = "/Docente/Dashboard";
+                else if (roles.Contains(VCG.Role_Tutor))
+                    dashboardRoute = "/Tutor/Dashboard";
+                else if (roles.Contains(VCG.Role_Estudiante))
+                    dashboardRoute = "/Estudiante/Dashboard";
+
+                return LocalRedirect(dashboardRoute);
             }
             if (result.RequiresTwoFactor)
             {
