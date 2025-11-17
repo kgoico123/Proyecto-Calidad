@@ -6,6 +6,7 @@ namespace Proyecto_Calidad.Models
     public class Calificacion
     {
 
+        //calificaciones
         public int IdCalificacion { get; set; }
         public int estudiante_CursoId { get; set; }
         public Estudiante_Curso Estudiante_Curso { get; set; }
